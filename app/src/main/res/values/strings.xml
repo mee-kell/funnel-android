@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Funnel</string>
+    <string name="welcome_home">Welcome home!</string>
+    <string name="log_out">Log Out</string>
 </resources>
