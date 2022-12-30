@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "943565669603",
+    "firebase_url": "https://funnel-72c2a-default-rtdb.firebaseio.com",
+    "project_id": "funnel-72c2a",
+    "storage_bucket": "funnel-72c2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:943565669603:android:4282254351b455979c71d6",
+        "android_client_info": {
+          "package_name": "com.example.funnel"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "943565669603-n6esdfgai4n9e4imccikfl7cknkuaql1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.funnel",
+            "certificate_hash": "644b39a89a036c45f6b3ae60655d1dc3969d06d0"
+          }
+        },
+        {
+          "client_id": "943565669603-49p12hgf0tbm3slcfu6p485dk59t9q4j.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaPDUuhdEEvhrR01KIjYXv6Gl3fl1AnrE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "943565669603-49p12hgf0tbm3slcfu6p485dk59t9q4j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
