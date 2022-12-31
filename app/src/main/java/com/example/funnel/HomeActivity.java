@@ -22,6 +22,7 @@ public class HomeActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .setReorderingAllowed(true)
                     .add(R.id.snippets_content_fragment, RecycleSnippetsFragment.class, null)
+                    .add(R.id.select_group_fragment, SelectGroupFragment.class, null)
                     .commit();
         }
 
