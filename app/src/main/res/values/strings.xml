@@ -98,4 +98,5 @@
     <string name="back">Back</string>
     <string name="select_image">Select Image</string>
     <string name="upload_image">Upload Image</string>
+    <string name="image_to_upload">image-to-upload</string>
 </resources>
