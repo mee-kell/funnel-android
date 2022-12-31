@@ -2,6 +2,7 @@ package com.example.funnel;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,11 +28,21 @@ public class HomeActivity extends AppCompatActivity {
         }
 
         Button logoutButton = findViewById(R.id.logout_button);
+        Button uploadButton = findViewById(R.id.uploadButton);
+
         logoutButton.setOnClickListener(view -> AuthUI.getInstance()
                 .signOut(HomeActivity.this)
                 .addOnCompleteListener(task -> {
                     Intent loginIntent = new Intent(HomeActivity.this, MainActivity.class);
                     startActivity(loginIntent);
                 }));
+
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent uploadIntent = new Intent(HomeActivity.this, UploadActivity.class);
+                startActivity(uploadIntent);
+            }
+        });
     }
 }
