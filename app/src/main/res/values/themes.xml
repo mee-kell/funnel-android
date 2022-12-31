@@ -14,11 +14,4 @@
         <!-- Customize your theme here. -->
     </style>
     <!-- Login screen theme. -->
-    <style name="Theme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="android:textColor">@color/black</item>
-        <item name="colorPrimary">@color/purple_500</item>
-        <item name="colorPrimaryDark">@color/purple_500</item>
-        <item name="android:editTextColor">@color/black</item>
-        <item name="android:windowBackground">@color/white</item>
-    </style>
 </resources>
