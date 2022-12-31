@@ -4,26 +4,35 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SelectGroupFragment #newInstance} factory method to
- * create an instance of this fragment.
- */
 public class SelectGroupFragment extends Fragment {
     private static final String TAG = "SelectGroupFragment";
+    private FirebaseUser user;
     private final ArrayList<String> options = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = FirebaseAuth.getInstance().getCurrentUser();
         initOptions();
     }
 
@@ -44,7 +53,24 @@ public class SelectGroupFragment extends Fragment {
     }
 
     private void initOptions() {
-        options.add("Option 1");
-        options.add("Option 2");
+        options.add("Select a group");
+        if (user != null) {
+            DatabaseReference databaseRef = FirebaseDatabase.getInstance().getReference(user.getUid());
+            ValueEventListener groupsListener = new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot userGroupsSnapshot) {
+                    // Add list of groups associated with the current user
+                    for (DataSnapshot groupSnapshot : userGroupsSnapshot.getChildren()) {
+                        String groupName = groupSnapshot.getKey();
+                        options.add(groupName);
+                    }
+                }
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    Log.w(TAG, "loadPost:onCancelled", databaseError.toException());
+                }
+            };
+            databaseRef.addValueEventListener(groupsListener);
+        }
     }
 }

@@ -1,7 +1,9 @@
 package com.example.funnel;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,11 +12,18 @@ import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.UUID;
 
 public class UploadActivity extends AppCompatActivity {
 
@@ -89,6 +98,24 @@ public class UploadActivity extends AppCompatActivity {
     }
 
     private void uploadImage() {
+        if (filepath != null) {
 
+            // TODO: Define path for image storage in Cloud Storage.
+
+            final String storagePath = "userID / groupID / image name";
+            StorageReference imageRef = storageReference.child(
+                    "images/" + filepath.getLastPathSegment());
+            UploadTask uploadTask = imageRef.putFile(filepath);
+
+            // Register observers to listen for when the download is done or if it fails
+            uploadTask.addOnFailureListener(exception ->
+                    Toast.makeText(UploadActivity.this,
+                            "Failed " + exception.getMessage(),
+                            Toast.LENGTH_SHORT).show())
+                    .addOnSuccessListener(taskSnapshot ->
+                            Toast.makeText(UploadActivity.this,
+                            "Image Uploaded!!",
+                            Toast.LENGTH_SHORT).show());
+        }
     }
 }

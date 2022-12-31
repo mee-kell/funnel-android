@@ -37,12 +37,9 @@ public class HomeActivity extends AppCompatActivity {
                     startActivity(loginIntent);
                 }));
 
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent uploadIntent = new Intent(HomeActivity.this, UploadActivity.class);
-                startActivity(uploadIntent);
-            }
+        uploadButton.setOnClickListener(view -> {
+            Intent uploadIntent = new Intent(HomeActivity.this, UploadActivity.class);
+            startActivity(uploadIntent);
         });
     }
 }

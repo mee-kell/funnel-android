@@ -24,10 +24,10 @@
             android:orientation="vertical">
 
             <Button
-                android:id="@+id/uploadImageButton"
+                android:id="@+id/selectImageButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/upload_image" />
+                android:text="@string/select_image" />
 
             <ImageView
                 android:id="@+id/uploadImageView"
@@ -35,18 +35,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="24dp"
+                android:contentDescription="@string/image_to_upload"
                 app:layout_constraintBottom_toTopOf="@+id/uploadImageButton"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/selectImageButton"
-                tools:srcCompat="@tools:sample/avatars"
-                android:contentDescription="@string/image_to_upload" />
+                tools:srcCompat="@tools:sample/avatars" />
 
             <Button
-                android:id="@+id/selectImageButton"
+                android:id="@+id/uploadImageButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/select_image" />
+                android:text="@string/upload_image" />
+
         </LinearLayout>
     </ScrollView>
 
