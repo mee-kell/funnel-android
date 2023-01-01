@@ -3,7 +3,7 @@ package com.example.funnel;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAdapter.ViewHolder> {
 
-    private final String[] localDataSet;
+    private Snippet[] snippets = {};
 
     /**
      * Provide a reference to the type of views that you are using
@@ -19,25 +19,27 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
+        private final ImageView imageView;
 
         public ViewHolder(View view) {
             super(view);
-            textView = (TextView) view.findViewById(R.id.snippet_summary);
+            textView = view.findViewById(R.id.snippet_summary);
+            imageView = view.findViewById(R.id.snippet_image);
         }
 
         public TextView getTextView() {
             return textView;
         }
+
+        public ImageView getImageView() {
+            return imageView;
+        }
     }
 
-    /**
-     * Initialize the dataset of the Adapter
-     *
-     * @param dataSet String[] containing the data to populate views to be used
-     * by RecyclerView
-     */
-    public RecycleSnippetAdapter(String[] dataSet) {
-        localDataSet = dataSet;
+    public RecycleSnippetAdapter(Snippet[] dataset) {
+        if (dataset != null) {
+            snippets = dataset;
+        }
     }
 
     // Create new views (invoked by the layout manager)
@@ -53,15 +55,13 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-
-        // Get element from your dataset at this position and replace the
-        // contents of the view with that element
-        viewHolder.getTextView().setText(localDataSet[position]);
+        viewHolder.getImageView().setImageURI(snippets[position].getURI());
+        viewHolder.getTextView().setText(snippets[position].getSummary());
     }
 
     // Return the size of your dataset
     @Override
     public int getItemCount() {
-        return localDataSet.length;
+        return snippets.length;
     }
 }

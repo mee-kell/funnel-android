@@ -1,8 +1,11 @@
 package com.example.funnel;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -10,22 +13,36 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link RecycleSnippetsFragment #newInstance} factory method to
- * create an instance of this fragment.
- */
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.HashSet;
+import java.util.Set;
+
 public class RecycleSnippetsFragment extends Fragment {
     private static final String TAG = "RecycleSnippetsFragment";
     protected RecyclerView recyclerView;
     protected RecycleSnippetAdapter adapter;
     protected RecyclerView.LayoutManager layoutManager;
-    protected String[] dataset;
+    protected Snippet[] dataset;
+    private SelectGroupViewModel viewModel;
+    private FirebaseUser user;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initDataset();
+        user = FirebaseAuth.getInstance().getCurrentUser();
+//        initDataset("");
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        viewModel = new ViewModelProvider(requireActivity()).get(SelectGroupViewModel.class);
+        // Update the images shown.
+        viewModel.getSelectedGroup().observe(getViewLifecycleOwner(), this::initDataset);
     }
 
     @Override
@@ -43,11 +60,42 @@ public class RecycleSnippetsFragment extends Fragment {
         return rootView;
     }
 
-    private void initDataset() {
-        final int DATASET_COUNT = 60;
-        dataset = new String[DATASET_COUNT];
-        for (int i = 0; i < DATASET_COUNT; i++) {
-            dataset[i] = "This is element #" + i;
+    private void initDataset(String selectedGroup) {
+        Set<Snippet> snippetSet = new HashSet<>();
+        // Do not return images if no group is selected
+        if (selectedGroup == null || selectedGroup.length() == 0) {
+            return;
+        }
+        DataSnapshot userSnapshot = viewModel.getUserSnapshot().getValue();
+        if (userSnapshot == null) {
+            return;
+        }
+        // Iterate through all groups owned by the user.
+        for (DataSnapshot groupSnapshot : userSnapshot.getChildren()) {
+            String groupName = groupSnapshot.getKey();
+            assert groupName != null;
+            if (groupName.equals(selectedGroup)) {
+                continue;
+            }
+            // Iterate through all images in the selected group.
+            for (DataSnapshot imageSnapshot : groupSnapshot.getChildren()) {
+                String summary = (String) imageSnapshot.child("summary").getValue();
+                String summaryPath = String.format("%s/%s/%s/summary",
+                        user.getUid(), groupName, imageSnapshot.getKey());
+
+                String url = (String) imageSnapshot.child("imgPath").getValue();
+                String path = String.format("%s/%s/%s", user.getUid(), groupName, url);
+
+                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                storageRef.child(path).getDownloadUrl().addOnSuccessListener(uri -> {
+                    Snippet newSnippet = new Snippet(uri, summary, summaryPath);
+                    snippetSet.add(newSnippet);
+                });
+            }
+        }
+        if (!snippetSet.isEmpty()) {
+            dataset = snippetSet.toArray(dataset);
+            adapter.notifyDataSetChanged();
         }
     }
 
