@@ -1,6 +1,7 @@
 package com.example.funnel;
 
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -62,7 +63,11 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
         Uri imageUri = snippets.get(position).getURI();
         ImageView imageView = viewHolder.getImageView();
-        Picasso.with(imageView.getContext()).load(imageUri).fit().noPlaceholder().into(imageView);
+        Picasso.with(imageView.getContext())
+                .load(imageUri)
+                .noPlaceholder()
+                .fit().centerInside()
+                .into(imageView);
         viewHolder.getTextView().setText(snippets.get(position).getSummary());
     }
 
