@@ -99,4 +99,6 @@
     <string name="select_image">Select Image</string>
     <string name="upload_image">Upload Image</string>
     <string name="image_to_upload">image-to-upload</string>
+    <string name="snippet_image">snippet image</string>
+    <string name="new_summary_editing">New summary editing</string>
 </resources>
