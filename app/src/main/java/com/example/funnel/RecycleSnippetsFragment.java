@@ -115,12 +115,6 @@ public class RecycleSnippetsFragment extends Fragment {
                     });
                 }
             }
-
-//            dataset.clear();
-//            Log.d(TAG, "Final snippet set: " + snippetSet);
-//            dataset.addAll(snippetSet);
-//            Log.d(TAG, "New dataset: " + dataset);
-//            adapter.notifyDataSetChanged();
         });
 
     }

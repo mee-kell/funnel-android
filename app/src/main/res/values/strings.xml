@@ -100,5 +100,6 @@
     <string name="upload_image">Upload Image</string>
     <string name="image_to_upload">image-to-upload</string>
     <string name="snippet_image">snippet image</string>
-    <string name="new_summary_editing">New summary editing</string>
+    <string name="new_summary_editing">Edit or add new summary</string>
+    <string name="submit">Submit</string>
 </resources>

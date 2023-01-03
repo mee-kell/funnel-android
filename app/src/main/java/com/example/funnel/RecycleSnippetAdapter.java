@@ -1,7 +1,8 @@
 package com.example.funnel;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -26,11 +28,13 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private final TextView textView;
         private final ImageView imageView;
+        private final FloatingActionButton editButton;
 
         public ViewHolder(View view) {
             super(view);
             textView = view.findViewById(R.id.snippet_summary);
             imageView = view.findViewById(R.id.snippet_image);
+            editButton = view.findViewById(R.id.editButton);
         }
 
         public TextView getTextView() {
@@ -39,6 +43,10 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
 
         public ImageView getImageView() {
             return imageView;
+        }
+
+        public FloatingActionButton getEditButton() {
+            return editButton;
         }
     }
 
@@ -69,6 +77,15 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
                 .fit().centerInside()
                 .into(imageView);
         viewHolder.getTextView().setText(snippets.get(position).getSummary());
+
+        FloatingActionButton editButton = viewHolder.getEditButton();
+        String summaryPath = snippets.get(position).getSummaryPath();
+        Context buttonContext = editButton.getContext();
+        editButton.setOnClickListener(view -> {
+            Intent editIntent = new Intent(buttonContext, EditSummaryActivity.class);
+            editIntent.putExtra("summaryPath", summaryPath);
+            buttonContext.startActivity(editIntent);
+        });
     }
 
     // Return the size of your dataset

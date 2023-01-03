@@ -11,12 +11,10 @@
         android:id="@+id/imageView"
         android:layout_width="0dp"
         android:layout_height="200dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
         android:contentDescription="@string/snippet_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/editNewSummary"
+        app:layout_constraintStart_toStartOf="@+id/editNewSummary"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -30,10 +28,28 @@
         android:autofillHints="Insert new summary"
         android:ems="10"
         android:gravity="start|top"
-        android:inputType="textMultiLine"
         android:hint="@string/new_summary_editing"
+        android:inputType="textMultiLine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageView" />
+
+    <Button
+        android:id="@+id/submitSummaryButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/submit"
+        app:layout_constraintEnd_toEndOf="@+id/editNewSummary"
+        app:layout_constraintTop_toBottomOf="@+id/editNewSummary" />
+
+    <Button
+        android:id="@+id/editBackButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/back"
+        app:layout_constraintStart_toStartOf="@+id/editNewSummary"
+        app:layout_constraintTop_toBottomOf="@+id/editNewSummary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
