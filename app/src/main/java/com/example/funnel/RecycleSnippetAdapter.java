@@ -9,9 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAdapter.ViewHolder> {
 
-    private Snippet[] snippets = {};
+    private ArrayList<Snippet> snippets = new ArrayList<>();
 
     /**
      * Provide a reference to the type of views that you are using
@@ -36,7 +38,7 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
         }
     }
 
-    public RecycleSnippetAdapter(Snippet[] dataset) {
+    public RecycleSnippetAdapter(ArrayList<Snippet> dataset) {
         if (dataset != null) {
             snippets = dataset;
         }
@@ -55,13 +57,13 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.getImageView().setImageURI(snippets[position].getURI());
-        viewHolder.getTextView().setText(snippets[position].getSummary());
+        viewHolder.getImageView().setImageURI(snippets.get(position).getURI());
+        viewHolder.getTextView().setText(snippets.get(position).getSummary());
     }
 
     // Return the size of your dataset
     @Override
     public int getItemCount() {
-        return snippets.length;
+        return snippets.size();
     }
 }

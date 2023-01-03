@@ -1,6 +1,5 @@
 package com.example.funnel;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,6 +8,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +19,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +28,7 @@ public class RecycleSnippetsFragment extends Fragment {
     protected RecyclerView recyclerView;
     protected RecycleSnippetAdapter adapter;
     protected RecyclerView.LayoutManager layoutManager;
-    protected Snippet[] dataset;
+    protected ArrayList<Snippet> dataset;
     private SelectGroupViewModel viewModel;
     private FirebaseUser user;
 
@@ -35,7 +36,7 @@ public class RecycleSnippetsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user = FirebaseAuth.getInstance().getCurrentUser();
-//        initDataset("");
+        dataset = new ArrayList<>();
     }
 
     @Override
@@ -64,39 +65,63 @@ public class RecycleSnippetsFragment extends Fragment {
         Set<Snippet> snippetSet = new HashSet<>();
         // Do not return images if no group is selected
         if (selectedGroup == null || selectedGroup.length() == 0) {
+            Log.d(TAG, "No group selected.");
             return;
         }
-        DataSnapshot userSnapshot = viewModel.getUserSnapshot().getValue();
-        if (userSnapshot == null) {
-            return;
-        }
-        // Iterate through all groups owned by the user.
-        for (DataSnapshot groupSnapshot : userSnapshot.getChildren()) {
-            String groupName = groupSnapshot.getKey();
-            assert groupName != null;
-            if (groupName.equals(selectedGroup)) {
-                continue;
+        viewModel.getUserSnapshot().observe(getViewLifecycleOwner(), userSnapshot -> {
+            if (userSnapshot == null) {
+                Log.d(TAG, "User snapshot is null.");
+                return;
             }
-            // Iterate through all images in the selected group.
-            for (DataSnapshot imageSnapshot : groupSnapshot.getChildren()) {
-                String summary = (String) imageSnapshot.child("summary").getValue();
-                String summaryPath = String.format("%s/%s/%s/summary",
-                        user.getUid(), groupName, imageSnapshot.getKey());
-
-                String url = (String) imageSnapshot.child("imgPath").getValue();
-                String path = String.format("%s/%s/%s", user.getUid(), groupName, url);
-
-                StorageReference storageRef = FirebaseStorage.getInstance().getReference();
-                storageRef.child(path).getDownloadUrl().addOnSuccessListener(uri -> {
-                    Snippet newSnippet = new Snippet(uri, summary, summaryPath);
-                    snippetSet.add(newSnippet);
-                });
-            }
-        }
-        if (!snippetSet.isEmpty()) {
-            dataset = snippetSet.toArray(dataset);
+            // Iterate through all groups owned by the user.
+            Log.d(TAG, "Selected group is " + selectedGroup);
+            dataset.clear();
             adapter.notifyDataSetChanged();
-        }
+
+            for (DataSnapshot groupSnapshot : userSnapshot.getChildren()) {
+                String groupName = groupSnapshot.getKey();
+                assert groupName != null;
+                Log.d(TAG, "Group name is: " + groupName);
+                if (!groupName.equals(selectedGroup)) {
+                    continue;
+                }
+                // Iterate through all images in the selected group.
+                for (DataSnapshot imageSnapshot : groupSnapshot.getChildren()) {
+                    String summary = (String) imageSnapshot.child("summary").getValue();
+                    String summaryPath = String.format("%s/%s/%s/summary",
+                            user.getUid(), groupName, imageSnapshot.getKey());
+
+                    Log.d(TAG, "Summary: " + summary);
+
+                    String url = (String) imageSnapshot.child("imgPath").getValue();
+                    String path = String.format("%s/%s/%s", user.getUid(), groupName, url);
+
+                    Log.d(TAG, "Image storage path: " + path);
+
+                    StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                    StorageReference snippetRef = storageRef.child(path);
+
+                    Log.d(TAG, "Storage reference: " + snippetRef.toString());
+
+                    snippetRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                        Snippet newSnippet = new Snippet(uri, summary, summaryPath);
+//                        snippetSet.add(newSnippet);
+//                        Log.d(TAG, "Add to snippet set: " + newSnippet.getURI());
+
+                        int index = dataset.size();
+                        dataset.add(index, newSnippet);
+                        adapter.notifyItemInserted(index);
+                    });
+                }
+            }
+
+//            dataset.clear();
+//            Log.d(TAG, "Final snippet set: " + snippetSet);
+//            dataset.addAll(snippetSet);
+//            Log.d(TAG, "New dataset: " + dataset);
+//            adapter.notifyDataSetChanged();
+        });
+
     }
 
 }
