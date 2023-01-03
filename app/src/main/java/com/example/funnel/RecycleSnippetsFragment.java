@@ -101,10 +101,11 @@ public class RecycleSnippetsFragment extends Fragment {
                     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
                     StorageReference snippetRef = storageRef.child(path);
 
-                    Log.d(TAG, "Storage reference: " + snippetRef.toString());
+                    Log.d(TAG, "Storage reference: " + snippetRef);
 
                     snippetRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         Snippet newSnippet = new Snippet(uri, summary, summaryPath);
+                        Log.d(TAG, "Snippet uri: " + uri.toString());
 //                        snippetSet.add(newSnippet);
 //                        Log.d(TAG, "Add to snippet set: " + newSnippet.getURI());
 

@@ -1,5 +1,6 @@
 package com.example.funnel;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +9,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -57,7 +60,9 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        viewHolder.getImageView().setImageURI(snippets.get(position).getURI());
+        Uri imageUri = snippets.get(position).getURI();
+        ImageView imageView = viewHolder.getImageView();
+        Picasso.with(imageView.getContext()).load(imageUri).fit().noPlaceholder().into(imageView);
         viewHolder.getTextView().setText(snippets.get(position).getSummary());
     }
 
