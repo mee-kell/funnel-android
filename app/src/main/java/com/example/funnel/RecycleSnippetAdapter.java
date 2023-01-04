@@ -69,23 +69,26 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Uri imageUri = snippets.get(position).getURI();
+        Snippet currentSnippet = snippets.get(position);
+        Uri imageUri = currentSnippet.getURI();
         ImageView imageView = viewHolder.getImageView();
         Picasso.with(imageView.getContext())
                 .load(imageUri)
                 .noPlaceholder()
                 .fit().centerInside()
                 .into(imageView);
-        viewHolder.getTextView().setText(snippets.get(position).getSummary());
+        String currentSummary = currentSnippet.getSummary();
+        viewHolder.getTextView().setText(currentSummary);
 
         FloatingActionButton editButton = viewHolder.getEditButton();
-        String summaryPath = snippets.get(position).getSummaryPath();
         Context buttonContext = editButton.getContext();
         editButton.setOnClickListener(view -> {
             Intent editIntent = new Intent(buttonContext, EditSummaryActivity.class);
-            editIntent.putExtra("summaryPath", summaryPath);
+            editIntent.putExtra("userId", currentSnippet.getUserId());
+            editIntent.putExtra("groupName", currentSnippet.getGroupName());
+            editIntent.putExtra("imageName", currentSnippet.getImageName());
             editIntent.putExtra("imageUri", imageUri.toString());
-            editIntent.putExtra("currentSummary", snippets.get(position).getSummary());
+            editIntent.putExtra("currentSummary", currentSummary);
             buttonContext.startActivity(editIntent);
         });
     }

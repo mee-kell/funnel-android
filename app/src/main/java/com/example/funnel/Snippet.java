@@ -6,12 +6,17 @@ public class Snippet {
 
     private final Uri uri;
     private final String summary;
-    private final String summaryPath;
+    private final String userId;
+    private final String groupName;
 
-    public Snippet(Uri uri, String summary, String summaryPath) {
+    private final String imageName;
+
+    public Snippet(Uri uri, String summary, String userId, String groupName, String imageName) {
         this.uri = uri;
         this.summary = summary;
-        this.summaryPath = summaryPath;
+        this.userId = userId;
+        this.groupName = groupName;
+        this.imageName = imageName;
     }
 
     public Uri getURI() {
@@ -22,8 +27,16 @@ public class Snippet {
         return summary;
     }
 
-    public String getSummaryPath() {
-        return summaryPath;
+    public String getUserId() {
+        return userId;
+    }
+
+    public String getGroupName() {
+        return groupName;
+    }
+
+    public String getImageName() {
+        return imageName;
     }
 
 }

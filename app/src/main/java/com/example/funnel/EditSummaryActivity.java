@@ -10,18 +10,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
 public class EditSummaryActivity extends AppCompatActivity {
+
+    private String currentSummary;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_summary);
 
-        String summaryPath = getIntent().getStringExtra("summaryPath");
         Uri imageUri = Uri.parse(getIntent().getStringExtra("imageUri"));
-        String currentSummary = getIntent().getStringExtra("currentSummary");
+        currentSummary = getIntent().getStringExtra("currentSummary");
 
         ImageView snippetImage = findViewById(R.id.snippetImage);
         EditText newSummary = findViewById(R.id.editNewSummary);
@@ -37,9 +40,33 @@ public class EditSummaryActivity extends AppCompatActivity {
         newSummary.setText(currentSummary);
 
         backButton.setOnClickListener(view -> {
-            Intent returnIntent = new Intent(EditSummaryActivity.this, HomeActivity.class);
-            startActivity(returnIntent);
+            returnHome();
         });
 
+        submitButton.setOnClickListener(view -> {
+            String userId = getIntent().getStringExtra("userId");
+            String groupName = getIntent().getStringExtra("groupName");
+            String imageName = getIntent().getStringExtra("imageName");
+            submitSummary(newSummary.getText().toString(), userId, groupName, imageName);
+        });
+
+    }
+
+    private void returnHome() {
+        Intent returnIntent = new Intent(EditSummaryActivity.this, HomeActivity.class);
+        startActivity(returnIntent);
+    }
+
+    private void submitSummary(String newSummary, String userId, String groupName, String imageName) {
+        if (newSummary.equals(currentSummary)) {
+            return;
+        }
+        DatabaseReference database = FirebaseDatabase.getInstance().getReference();
+        database.child(userId)
+                .child(groupName)
+                .child(imageName)
+                .child("summary")
+                .setValue(newSummary);
+        returnHome();
     }
 }

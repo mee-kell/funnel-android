@@ -88,27 +88,15 @@ public class RecycleSnippetsFragment extends Fragment {
                 // Iterate through all images in the selected group.
                 for (DataSnapshot imageSnapshot : groupSnapshot.getChildren()) {
                     String summary = (String) imageSnapshot.child("summary").getValue();
-                    String summaryPath = String.format("%s/%s/%s/summary",
-                            user.getUid(), groupName, imageSnapshot.getKey());
-
-                    Log.d(TAG, "Summary: " + summary);
-
                     String url = (String) imageSnapshot.child("imgPath").getValue();
-                    String path = String.format("%s/%s/%s", user.getUid(), groupName, url);
-
-                    Log.d(TAG, "Image storage path: " + path);
 
                     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+                    String path = String.format("%s/%s/%s", user.getUid(), groupName, url);
                     StorageReference snippetRef = storageRef.child(path);
 
-                    Log.d(TAG, "Storage reference: " + snippetRef);
-
                     snippetRef.getDownloadUrl().addOnSuccessListener(uri -> {
-                        Snippet newSnippet = new Snippet(uri, summary, summaryPath);
-                        Log.d(TAG, "Snippet uri: " + uri.toString());
-//                        snippetSet.add(newSnippet);
-//                        Log.d(TAG, "Add to snippet set: " + newSnippet.getURI());
-
+                        Snippet newSnippet = new Snippet(
+                                uri, summary, user.getUid(), groupName, imageSnapshot.getKey());
                         int index = dataset.size();
                         dataset.add(index, newSnippet);
                         adapter.notifyItemInserted(index);
