@@ -102,4 +102,6 @@
     <string name="snippet_image">snippet image</string>
     <string name="new_summary_editing">Edit or add new summary</string>
     <string name="submit">Submit</string>
+    <string name="subject_name">Subject name</string>
+    <string name="input_group_name">Input group name</string>
 </resources>
