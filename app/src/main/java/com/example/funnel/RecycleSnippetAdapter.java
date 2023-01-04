@@ -84,6 +84,8 @@ public class RecycleSnippetAdapter extends RecyclerView.Adapter<RecycleSnippetAd
         editButton.setOnClickListener(view -> {
             Intent editIntent = new Intent(buttonContext, EditSummaryActivity.class);
             editIntent.putExtra("summaryPath", summaryPath);
+            editIntent.putExtra("imageUri", imageUri.toString());
+            editIntent.putExtra("currentSummary", snippets.get(position).getSummary());
             buttonContext.startActivity(editIntent);
         });
     }
