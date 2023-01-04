@@ -100,8 +100,6 @@ public class UploadActivity extends AppCompatActivity {
             String imageName = filepath.getLastPathSegment();
             String storagePath = String.format("%s/%s/%s", userId, groupName, imageName);
 
-            Log.d("UPLOAD", storagePath);
-
             StorageReference storageReference = FirebaseStorage.getInstance().getReference();
             StorageReference imageRef = storageReference.child(storagePath);
             UploadTask uploadTask = imageRef.putFile(filepath);

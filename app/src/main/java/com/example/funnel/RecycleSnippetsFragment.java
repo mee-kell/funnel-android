@@ -28,7 +28,8 @@ public class RecycleSnippetsFragment extends Fragment {
     protected RecyclerView recyclerView;
     protected RecycleSnippetAdapter adapter;
     protected RecyclerView.LayoutManager layoutManager;
-    protected ArrayList<Snippet> dataset;
+    protected ArrayList<Snippet> allSnippets;
+    protected ArrayList<Snippet> displaySnippets;
     private SelectGroupViewModel viewModel;
     private FirebaseUser user;
 
@@ -36,7 +37,11 @@ public class RecycleSnippetsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         user = FirebaseAuth.getInstance().getCurrentUser();
-        dataset = new ArrayList<>();
+//        if (allSnippets == null || allSnippets.size() == 0) {
+//            allSnippets = new ArrayList<>();
+//        }
+        allSnippets = new ArrayList<>();
+        displaySnippets = new ArrayList<>();
     }
 
     @Override
@@ -55,36 +60,24 @@ public class RecycleSnippetsFragment extends Fragment {
         recyclerView = rootView.findViewById(R.id.recycleSnippetsView);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        adapter = new RecycleSnippetAdapter(dataset);
+        adapter = new RecycleSnippetAdapter(displaySnippets);
         recyclerView.setAdapter(adapter);
 
         return rootView;
     }
 
-    private void initDataset(String selectedGroup) {
-        Set<Snippet> snippetSet = new HashSet<>();
-        // Do not return images if no group is selected
-        if (selectedGroup == null || selectedGroup.length() == 0) {
-            Log.d(TAG, "No group selected.");
-            return;
-        }
+    // Save all snippets in all groups belonging to the user.
+    private void getAllUserSnippets() {
         viewModel.getUserSnapshot().observe(getViewLifecycleOwner(), userSnapshot -> {
             if (userSnapshot == null) {
                 Log.d(TAG, "User snapshot is null.");
                 return;
             }
             // Iterate through all groups owned by the user.
-            Log.d(TAG, "Selected group is " + selectedGroup);
-            dataset.clear();
-            adapter.notifyDataSetChanged();
-
             for (DataSnapshot groupSnapshot : userSnapshot.getChildren()) {
                 String groupName = groupSnapshot.getKey();
                 assert groupName != null;
-                Log.d(TAG, "Group name is: " + groupName);
-                if (!groupName.equals(selectedGroup)) {
-                    continue;
-                }
+
                 // Iterate through all images in the selected group.
                 for (DataSnapshot imageSnapshot : groupSnapshot.getChildren()) {
                     String summary = (String) imageSnapshot.child("summary").getValue();
@@ -97,14 +90,35 @@ public class RecycleSnippetsFragment extends Fragment {
                     snippetRef.getDownloadUrl().addOnSuccessListener(uri -> {
                         Snippet newSnippet = new Snippet(
                                 uri, summary, user.getUid(), groupName, imageSnapshot.getKey());
-                        int index = dataset.size();
-                        dataset.add(index, newSnippet);
-                        adapter.notifyItemInserted(index);
+                        allSnippets.add(newSnippet);
                     });
                 }
             }
         });
+    }
 
+    private void initDataset(String selectedGroup) {
+        // Do not return images if no group is selected
+        if (selectedGroup == null || selectedGroup.length() == 0) {
+            Log.d(TAG, "No group selected.");
+            return;
+        }
+
+        // Fetch all snippets for user if not yet fetched
+        if (allSnippets == null || allSnippets.size() == 0) {
+            getAllUserSnippets();
+        }
+
+        displaySnippets.clear();
+        adapter.notifyDataSetChanged();
+
+        for (Snippet snippet : allSnippets) {
+            if (snippet.getGroupName().equals(selectedGroup)) {
+                int index = displaySnippets.size();
+                displaySnippets.add(index, snippet);
+                adapter.notifyItemInserted(index);
+            }
+        }
     }
 
 }
